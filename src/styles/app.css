@@ -1,0 +1,33 @@
+/* =============================================================
+   Feature styles: quote change transition
+   ============================================================= */
+
+/* The wrapper fades/slides out, the quote swaps, then it fades back in.
+   Height is frozen by App.jsx while changing, so the card never jumps. */
+.quote-transition {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  transition:
+    opacity var(--motion-duration) ease-in-out,
+    transform var(--motion-duration) ease-in-out;
+  will-change: opacity, transform;
+}
+
+.quote-transition--active {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .quote-transition {
+    transition: none;
+  }
+
+  .quote-transition--active {
+    opacity: 1;
+    transform: none;
+  }
+}

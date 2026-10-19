@@ -24,6 +24,9 @@
     Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   --font-family-quote: Georgia, 'Times New Roman', serif;
 
+  /* Motion (keep in sync with TRANSITION_MS in src/App.jsx) */
+  --motion-duration: 200ms;
+
   /* Layout */
   --container-max-width: 40rem;
   --app-padding-block: var(--space-6);
