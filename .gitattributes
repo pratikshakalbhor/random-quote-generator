@@ -1,0 +1,7 @@
+# Normalize line endings so the repo behaves the same on Windows and Unix.
+* text=auto eol=lf
+
+# Binary assets keep their bytes untouched.
+*.png binary
+*.jpg binary
+*.ico binary
