@@ -2,8 +2,14 @@ import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
+// GitHub Pages project sites are served from /<repository-name>/.
+// Change this if the repository is named differently, or set it to '/'
+// for a user/organisation site or a custom domain.
+const BASE = '/random-quote-generator/'
+
 // https://vite.dev/config/
 export default defineConfig({
+  base: BASE,
   plugins: [
     react(),
     VitePWA({
@@ -15,6 +21,8 @@ export default defineConfig({
         theme_color: '#6366f1',
         background_color: '#f5f7fa',
         display: 'standalone',
+        start_url: BASE,
+        scope: BASE,
         icons: [
           {
             src: 'favicon.svg',
