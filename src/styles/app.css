@@ -1,8 +1,9 @@
 /* =============================================================
-   Feature styles: quote change transition
+   Feature styles: transitions, favorite toggle, favorites list
    ============================================================= */
 
-/* The wrapper fades/slides out, the quote swaps, then it fades back in.
+/* ---------- Quote change transition ----------
+   The wrapper fades/slides out, the quote swaps, then it fades back in.
    Height is frozen by App.jsx while changing, so the card never jumps. */
 .quote-transition {
   display: flex;
@@ -20,14 +21,135 @@
   transform: translateY(8px);
 }
 
+/* ---------- Header favorites count ---------- */
+.app__favorites-count {
+  margin: var(--space-2) 0 0;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+/* ---------- Favorite toggle ---------- */
+.quote-card__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.favorite-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: var(--space-1) var(--space-2);
+  color: var(--color-text-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition:
+    color var(--motion-duration) ease-in-out,
+    transform var(--motion-duration) ease-in-out;
+}
+
+.favorite-toggle:hover {
+  color: var(--color-accent);
+}
+
+.favorite-toggle:active {
+  transform: scale(0.95);
+}
+
+.favorite-toggle--active {
+  color: var(--color-accent);
+}
+
+.favorite-toggle__icon {
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+/* ---------- Favorites list ---------- */
+.favorites {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+}
+
+.favorites__title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-wrap: balance;
+}
+
+.favorites__list {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.favorites__item {
+  display: flex;
+  justify-content: center;
+}
+
+.favorites__actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-2);
+}
+
+.favorites__empty {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+/* Saved quotes are reference material, not the hero: keep them compact. */
+.favorites .quote-card {
+  gap: var(--space-3);
+  padding: var(--space-5);
+}
+
+.favorites .quote-card__quote p {
+  font-size: clamp(1rem, 0.9rem + 0.5vw, 1.15rem);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 360px) {
+  .favorites .quote-card {
+    padding: var(--space-4);
+  }
+}
+
+@media (min-width: 48rem) {
+  .favorites__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .favorites__list > :only-child {
+    grid-column: 1 / -1;
+  }
+}
+
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
-  .quote-transition {
+  .quote-transition,
+  .favorite-toggle {
     transition: none;
   }
 
   .quote-transition--active {
     opacity: 1;
+    transform: none;
+  }
+
+  .favorite-toggle:active {
     transform: none;
   }
 }
