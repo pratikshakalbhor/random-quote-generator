@@ -140,3 +140,166 @@ html {
 .app__footer p {
   margin: 0;
 }
+
+/* =============================================================
+   Quote region (aria-live)
+   ============================================================= */
+.quote-region {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+/* =============================================================
+   Quote card
+   ============================================================= */
+.quote-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+  max-width: var(--container-max-width);
+  min-width: 0;
+  margin: 0;
+  padding: var(--space-6);
+  background: var(--color-surface);
+  border: 1px solid var(--color-surface-border);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 20px 40px -25px rgba(15, 23, 42, 0.45);
+  overflow-wrap: break-word;
+}
+
+@media (prefers-color-scheme: dark) {
+  .quote-card {
+    box-shadow: 0 20px 40px -25px rgba(0, 0, 0, 0.7);
+  }
+}
+
+.quote-card__quote {
+  margin: 0;
+  padding: 0;
+}
+
+.quote-card__quote p {
+  margin: 0;
+  font-family: var(--font-family-quote);
+  font-size: clamp(1.25rem, 0.95rem + 3vw, 2rem);
+  line-height: 1.35;
+  color: var(--color-text);
+  text-wrap: pretty;
+  quotes: "\201C" "\201D" "\2018" "\2019";
+}
+
+.quote-card__quote p::before {
+  content: open-quote;
+}
+
+.quote-card__quote p::after {
+  content: close-quote;
+}
+
+.quote-card__footer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.quote-card__author {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+}
+
+/* =============================================================
+   Genre chip
+   ============================================================= */
+.genre-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  color: var(--color-chip-text);
+  background: var(--color-chip-bg);
+  border-radius: 9999px;
+  user-select: none;
+}
+
+/* =============================================================
+   Buttons
+   ============================================================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: min(100%, 18rem);
+  min-height: 44px;
+  padding: 0.625rem 1.75rem;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--color-accent-contrast);
+  background: var(--color-accent);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.btn--secondary {
+  color: var(--color-accent);
+  background: transparent;
+  border-color: var(--color-surface-border);
+}
+
+/* =============================================================
+   Responsive: 320px -> desktop
+   ============================================================= */
+
+/* Compact phones */
+@media (max-width: 360px) {
+  .app {
+    gap: var(--space-5);
+    padding-inline: var(--space-3);
+  }
+
+  .quote-card {
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+  }
+}
+
+/* Tablets and up */
+@media (min-width: 48rem) {
+  :root {
+    --app-padding-block: var(--space-8);
+  }
+}
+
+/* Short landscape viewports (phones held sideways) */
+@media (max-height: 26rem) and (orientation: landscape) {
+  .app {
+    gap: var(--space-4);
+    padding-block: var(--space-4);
+  }
+
+  .app__header h1 {
+    font-size: clamp(1.25rem, 0.8rem + 2vw, 1.75rem);
+  }
+
+  .quote-card {
+    gap: var(--space-3);
+    padding: var(--space-4);
+  }
+
+  .quote-card__quote p {
+    font-size: clamp(1.1rem, 0.8rem + 2vw, 1.5rem);
+  }
+}
