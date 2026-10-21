@@ -20,18 +20,29 @@ APIs, and no paid services: all forty quotes are bundled with the app.
 
 - **Instant first quote** — the initial quote comes from a lazy `useState`
   initializer, so a valid quote is on screen in the first paint.
+- **Genre filter** — the genre list is derived from `quotes.json` (unique genres,
+  sorted, plus **All**), so it updates whenever the data changes. Choosing a genre
+  immediately swaps in a quote from it, persists to `localStorage`, and falls back
+  to **All** if the stored genre no longer exists. Favorites are never filtered.
 - **Never repeats** — "New Quote" is guaranteed to differ from the quote currently
-  displayed.
+  displayed. With a genre selected it picks only from that genre, and a genre with a
+  single quote simply shows it again.
 - **Smooth transitions** — the outgoing quote fades and slides out, the new one
   fades in (~400ms). The card's height is frozen during the swap so nothing jumps.
   Fully disabled under `prefers-reduced-motion`.
-- **Favorites** — a heart/star toggle on the card (`aria-pressed`, dynamic
-  accessible label) and a favorites list with per-item **Remove**, an empty state,
-  and a live count in the header. Persisted in `localStorage`.
+- **Favorites** — a star toggle on the card (`aria-pressed`, dynamic accessible
+  label) and a favorites list with per-item **Remove**, an empty state, and a live
+  count in the header. Persisted in `localStorage`.
 - **Corruption-safe storage** — invalid JSON, wrong-shaped data, or blocked storage
-  degrade to an empty list instead of crashing.
-- **Light / dark theme** — driven entirely by `prefers-color-scheme` and design
-  tokens.
+  degrade to a safe default instead of crashing.
+- **Theme toggle** — a header button cycles **System** (default) → **Light** → **Dark**
+  and names both the current mode and the next one for screen readers. The choice is
+  stored via `useLocalStorage` and applied to `<html data-theme>` by a tiny inline
+  script before first paint, so reloads never flash the wrong theme. System mode keeps
+  following `prefers-color-scheme` live, and the `theme-color` meta tag follows the
+  active theme so the browser UI matches.
+- **AA contrast** — text, genre chip, buttons, and focus ring are checked against
+  WCAG AA in both light and dark token sets.
 - **Responsive** — designed from 320px to desktop, portrait and landscape.
 - **Accessible** — semantic `blockquote`, real `button` elements, one consistent
   `:focus-visible` ring, and an `aria-live="polite"` region for quote changes.
@@ -58,6 +69,8 @@ random-quote-generator/
 │  └─ favicon.svg             # app icon (also used by the web manifest)
 ├─ src/
 │  ├─ components/
+│  │  ├─ GenreFilter.jsx      # labeled genre select (above the quote card)
+│  │  ├─ ThemeToggle.jsx      # System / Light / Dark cycle button
 │  │  ├─ QuoteCard.jsx        # current quote + favorite toggle
 │  │  └─ FavoritesList.jsx    # saved quotes, remove, empty state
 │  ├─ data/
@@ -68,10 +81,12 @@ random-quote-generator/
 │  │  ├─ global.css           # tokens, theme, layout, primitives
 │  │  └─ app.css              # transitions, favorites, toggle
 │  ├─ utils/
-│  │  └─ pickRandom.js        # random quote, never the current one
+│  │  ├─ genres.js            # genre options + filter derived from quotes.json
+│  │  ├─ pickRandom.js        # random quote from a pool, never the current one
+│  │  └─ theme.js             # theme states, persistence key, applyTheme
 │  ├─ App.jsx                 # screen composition
 │  └─ main.jsx                # entry point
-├─ index.html
+├─ index.html                 # shell + pre-paint theme script
 ├─ vite.config.js             # React, base path, PWA manifest + Workbox
 └─ package.json
 ```
@@ -149,13 +164,14 @@ Short version — the full write-up is in [`docs/design-notes.md`](docs/design-n
   metadata) is deliberately quiet so the card stays the focal point.
 - **Editorial serif for quotes, system sans for UI.** Georgia sets quotations apart
   from interface copy without a webfont request.
-- **A single accent colour.** Indigo (`#6366f1`) carries the primary action, the
-  focus ring, and the saved-favorite state; everything else is neutral.
+- **A single accent colour.** Indigo (`#4f46e5` in light, `#818cf8` in dark,
+  AA-checked) carries the primary action, the focus ring, and the saved-favorite
+  state; everything else is neutral.
 - **Border + soft shadow on cards.** The border keeps the surface legible in dark
-  mode; the shadow gives it depth in light mode.
+  mode; the shadow (`--shadow-card`) gives it depth in light mode.
 - **Tokenised theming.** Colour, spacing, radius, typography, and motion are all
-  custom properties, re-declared once under `prefers-color-scheme: dark`. Components
-  never branch on the theme.
+  custom properties, re-declared for OS-dark and for explicit `[data-theme]`
+  overrides. Components never branch on the theme.
 - **Responsive without breakpoint sprawl.** Fluid `clamp()` typography, a single
   `40rem` content column, and only three media queries: compact phones, 768px and up
   (two-column favorites), and short landscape viewports.
@@ -190,12 +206,45 @@ Then in the repository settings, set **Pages → Source** to the `gh-pages` bran
 
 ## Testing checklist
 
+**Theme**
+
+- [ ] The header toggle starts on **System** (fresh storage) and cycles
+      System → Light → Dark → System. The label and `aria-label` name the current mode
+      and the next one.
+- [ ] **Light** stays light even when the OS is dark; **Dark** stays dark even when the
+      OS is light; **System** follows the OS in both directions.
+- [ ] In System mode, switching the OS theme (DevTools → Rendering → emulate
+      `prefers-color-scheme`) updates the page and the browser UI immediately.
+- [ ] Refreshing keeps the chosen mode (`random-quote-generator:theme` in Local
+      Storage); setting it to an invalid value (e.g. `"blue"`) falls back to System.
+- [ ] Reload with Dark (and again with Light) selected: no flash of the wrong theme.
+- [ ] The `theme-color` meta tag content changes to `#0f1020` for dark and `#f5f7fa`
+      for light.
+- [ ] The toggle is keyboard operable, shows the shared focus ring, and is at least
+      44px tall.
+- [ ] With no favorites, the empty state says "Tap the star" (matching the ★/☆ icon).
+
 **Animation**
 
 - [ ] "New Quote" fades/slides the old quote out and the new one in.
 - [ ] The card height does not jump or flicker during the change.
 - [ ] With reduced motion enabled, the quote swaps instantly (no delay, no animation).
 - [ ] Rapid clicking never leaves the card faded out or blank.
+
+**Genre filter**
+
+- [ ] The select lists **All** first, then every unique genre from the data in
+      alphabetical order (no hardcoded list).
+- [ ] Changing the genre immediately shows a quote from that genre with the same
+      fade/slide transition (instant with reduced motion).
+- [ ] "New Quote" stays inside the selected genre and never repeats the current quote.
+- [ ] A genre with only one quote shows that quote again without freezing.
+- [ ] The choice survives a refresh; setting
+      `random-quote-generator:genre` to a removed genre (e.g. `"History"`) loads with
+      **All** selected.
+- [ ] Keyboard: Tab to the select, change it with the arrow keys, and confirm the
+      focus ring is visible and the target is at least 44px tall.
+- [ ] Favorites still list every saved quote, regardless of the selected genre.
 
 **Favorites**
 

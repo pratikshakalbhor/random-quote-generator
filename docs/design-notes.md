@@ -24,8 +24,9 @@ that one act.
 
 ## Palette
 
-- One accent (indigo `#6366f1`) does all the work: the primary button, the focus
-  ring, the saved-favorite state. Everything else is a neutral scale.
+- One accent (indigo `#4f46e5` light / `#818cf8` dark) does all the work: the primary
+  button, the focus ring, the saved-favorite state. Everything else is a neutral
+  scale. Both accent values are dark/light enough that button text clears WCAG AA.
 - Surfaces are strictly layered (page → card) with a 1px border **plus** a soft
   shadow. The border keeps the card legible when the shadow is subtle; the shadow
   keeps it from looking flat when the background is close in value.
@@ -35,7 +36,13 @@ that one act.
 ## Theme
 
 - Everything is expressed as tokens in `:root` and re-declared under
-  `@media (prefers-color-scheme: dark)`. No component knows which theme is active.
+  `@media (prefers-color-scheme: dark)` (System mode) and under explicit
+  `[data-theme="light"]` / `[data-theme="dark"]` overrides. No component knows which
+  theme is active; they only read tokens.
+- The header toggle cycles System → Light → Dark. The choice is persisted and applied
+  by an inline script in `index.html` before first paint, so a reload never flashes
+  the wrong theme. The `theme-color` meta tag is kept in step so the browser chrome
+  matches the page.
 - `color-scheme` is set in both branches so form controls, scrollbars, and the
   browser's own chrome match the page.
 - Dark mode is not an inverted light mode: the accent lightens (`#818cf8`) and the
