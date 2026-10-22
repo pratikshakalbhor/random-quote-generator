@@ -3,7 +3,7 @@ function FavoritesList({ favorites, onRemove }) {
     return (
       <section className="favorites favorites--empty">
         <h2 className="favorites__title">Favorites</h2>
-        <p className="favorites__empty">No favorites saved yet. Tap the heart to add one!</p>
+        <p className="favorites__empty">No favorites saved yet. Tap the star to add one!</p>
       </section>
     )
   }

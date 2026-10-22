@@ -4,12 +4,38 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#6366f1" />
+    <meta name="theme-color" content="#f5f7fa" />
     <meta
       name="description"
       content="A simple offline-ready random quote generator."
     />
     <title>Random Quote Generator</title>
+    <!--
+      Apply the stored theme before first paint so a reload never flashes the
+      wrong theme. Keep the key and colours in sync with src/utils/theme.js.
+    -->
+    <script>
+      ;(function () {
+        var theme = 'system'
+        try {
+          var stored = JSON.parse(window.localStorage.getItem('random-quote-generator:theme'))
+          if (stored === 'light' || stored === 'dark') theme = stored
+        } catch (error) {
+          /* Storage unavailable or corrupt: fall back to System. */
+        }
+
+        document.documentElement.setAttribute('data-theme', theme)
+
+        var prefersDark =
+          typeof window.matchMedia === 'function' &&
+          window.matchMedia('(prefers-color-scheme: dark)').matches
+        var isDark = theme === 'dark' || (theme === 'system' && prefersDark)
+        var meta = document.querySelector('meta[name="theme-color"]')
+        if (meta) {
+          meta.setAttribute('content', isDark ? '#0f1020' : '#f5f7fa')
+        }
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

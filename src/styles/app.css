@@ -1,5 +1,6 @@
 /* =============================================================
-   Feature styles: transitions, favorite toggle, favorites list
+   Feature styles: transitions, theme toggle, genre filter,
+   favorite toggle, favorites list
    ============================================================= */
 
 /* ---------- Quote change transition ----------
@@ -26,6 +27,72 @@
   margin: var(--space-2) 0 0;
   font-size: 0.9rem;
   color: var(--color-text-muted);
+}
+
+/* ---------- Theme toggle ---------- */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: var(--space-1) var(--space-3);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+  border: 1px solid var(--color-surface-border);
+  border-radius: 9999px;
+  cursor: pointer;
+  transition:
+    color var(--motion-duration) ease-in-out,
+    border-color var(--motion-duration) ease-in-out;
+}
+
+.theme-toggle:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.theme-toggle__icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+/* ---------- Genre filter ---------- */
+.genre-filter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+  max-width: var(--container-max-width);
+}
+
+.genre-filter__label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.genre-filter__select {
+  width: 100%;
+  min-height: 44px;
+  padding: var(--space-2) var(--space-3);
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-surface-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color var(--motion-duration) ease-in-out;
+}
+
+.genre-filter__select:hover {
+  border-color: var(--color-accent);
 }
 
 /* ---------- Favorite toggle ---------- */
@@ -140,7 +207,9 @@
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   .quote-transition,
-  .favorite-toggle {
+  .favorite-toggle,
+  .genre-filter__select,
+  .theme-toggle {
     transition: none;
   }
 

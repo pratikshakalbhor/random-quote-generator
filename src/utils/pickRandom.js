@@ -1,24 +1,24 @@
 /**
- * Pick a random quote that is different from the given quote (by id).
- * Falls back gracefully when the list holds fewer than two quotes.
+ * Pick a random quote from `pool` that is not the quote identified by
+ * `currentId` (the "never the same quote twice in a row" rule).
+ *
+ * The current quote is excluded by filtering rather than by retrying, so a
+ * pool that only holds the current quote (a genre with a single quote) simply
+ * returns it again instead of looping forever.
+ *
+ * @param {Array} pool candidates to choose from
+ * @param {number|null} [currentId] id of the quote currently displayed
+ * @returns {Object|null} a quote, or null when the pool is empty
  */
-export function pickRandom(quotes, currentQuote) {
-  if (!Array.isArray(quotes) || quotes.length === 0) {
+export function pickRandom(pool, currentId = null) {
+  if (!Array.isArray(pool) || pool.length === 0) {
     return null
   }
 
-  if (quotes.length === 1) {
-    return quotes[0]
-  }
+  const candidates = pool.filter((quote) => quote && quote.id !== currentId)
+  const source = candidates.length > 0 ? candidates : pool
 
-  const currentId = currentQuote ? currentQuote.id : null
-  let candidate = null
-  do {
-    const randomIndex = Math.floor(Math.random() * quotes.length)
-    candidate = quotes[randomIndex]
-  } while (candidate.id === currentId)
-
-  return candidate
+  return source[Math.floor(Math.random() * source.length)]
 }
 
 export default pickRandom
